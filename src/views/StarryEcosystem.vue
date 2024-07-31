@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import StarryBackground from "@/components/StarryBackground.vue";
+import StarryBackground from "../components/StarryBackground.vue";
 </script>
 
 <template>
   <main>
     <StarryBackground />
-    <h1>Coucou les télépathes, moi je travaille <br> Y en a y travaille pas, moi je travaille</h1>
+    <h1>Hello from non API</h1>
   </main>
 </template>
 
