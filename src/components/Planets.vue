@@ -12,7 +12,17 @@
         <p>Découvert par : {{ planet.discoveredBy ?? 'Inconnu' }}</p>
         <p>Date de découverte : {{ planet.discoveryDate ?? 'Inconnue' }}</p>
         <p>Nom alternatif : {{ planet.alternativeName ?? 'Aucun' }}</p>
-        <!-- Ajoutez d'autres champs ici selon vos besoins -->
+
+        <!-- Section des Lunes -->
+        <div v-if="planet.moons && planet.moons.length > 0">
+          <h3>Lunes :</h3>
+          <ul>
+            <li v-for="moon in planet.moons" :key="moon.moon">{{ moon.moon }}</li>
+          </ul>
+        </div>
+        <div v-else>
+          <p>Aucune lune connue</p>
+        </div>
       </li>
     </ul>
     <p v-if="error">{{ error }}</p>
@@ -89,7 +99,6 @@ const error = ref<string | null>(null);
 const fetchPlanets = async () => {
   try {
     const response = await axios.get<ApiResponse>('https://api.le-systeme-solaire.net/rest/bodies/');
-    
     if (response.data && Array.isArray(response.data.bodies)) {
       planets.value = response.data.bodies.filter((body) => body.isPlanet);
     } else {
