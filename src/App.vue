@@ -1,21 +1,8 @@
-<template>
-  <div>
-    <StarryBackground />
-  </div>
-</template>
-
-<script>
-import StarryBackground from './components/StarryBackground.vue';
-
-export default {
-  name: 'Test',
-  components: {
-    StarryBackground
-  }
-};
+<script setup lang="ts">
+import { RouterLink, RouterView } from 'vue-router'
+import HelloWorld from './components/HelloWorld.vue'
 </script>
 
-<style>
-
-
-</style>
+<template>
+  <RouterView />
+</template>
