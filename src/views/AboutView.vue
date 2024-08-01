@@ -12,9 +12,10 @@ import StarryBackground from "../components/StarryBackground.vue";
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-const solarSystem = ref(null);
+const solarSystem = ref<HTMLDivElement | null>(null);
 
 onMounted(() => {
+  if (!solarSystem.value) return;
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
@@ -29,9 +30,9 @@ onMounted(() => {
   controls.dampingFactor = 0.25;
   controls.enableZoom = true;
 
-  const createPlanet = (imagePath, size, distance, orbitDuration, orbitTilt = 0) => {
+  const createPlanet = (imagePath: string, size: number, distance: number, orbitDuration: number, orbitTilt = 0) => {
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(imagePath, (texture) => {
+    textureLoader.load(imagePath, (texture: any) => {
       const material = new THREE.SpriteMaterial({ map: texture });
       const sprite = new THREE.Sprite(material);
       sprite.scale.set(size, size, 1);
@@ -66,7 +67,7 @@ onMounted(() => {
     });
   };
 
-  const animateFunctions = [];
+  const animateFunctions: (() => void)[] = [];
 
   createPlanet('images/sun.png', 400, 0, 0.1);
   createPlanet('images/mercury.png', 40, 150, 0.24);
