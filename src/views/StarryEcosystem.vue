@@ -5,7 +5,7 @@ import StarryBackground from "../components/StarryBackground.vue";
 <template>
   <main>
     <StarryBackground />
-    <h1>Hello from non API</h1>
+    <h1>Ça c'est mon système solaire, enculé</h1>
   </main>
 </template>
 
