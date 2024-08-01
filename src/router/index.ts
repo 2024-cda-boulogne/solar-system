@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import StarryEcosystem from '@/views/StarryEcosystem.vue';
-import PlanetsView from '@/views/PlantesView.vue'; // Importer le nouveau composant PlanetsView
+import PlanetsView from '@/views/PlanetsView.vue'; // Importer le nouveau composant PlanetsView
 
 const routes = [
   {
