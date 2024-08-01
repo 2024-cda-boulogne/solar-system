@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <StarryBackground />  <!-- Ajout du composant ici -->
     <div ref="solarSystem" class="solar-system"></div>
   </div>
 </template>
@@ -40,12 +41,17 @@ onMounted(() => {
 
   const createPlanet = (imagePath: string, size: number, distance: number, orbitDuration: number, orbitTilt = 0, name: string) => {
     const textureLoader = new THREE.TextureLoader();
+    const planetGroup = new THREE.Group();
+
     textureLoader.load(imagePath, (texture) => {
       const material = new THREE.SpriteMaterial({ map: texture });
       const sprite = new THREE.Sprite(material);
       sprite.scale.set(size, size, 1);
       sprite.userData.name = name;
       planets.push(sprite);
+
+      planetGroup.add(sprite);
+      scene.add(planetGroup);
 
       const orbit = new THREE.EllipseCurve(
         0, 0,
@@ -65,6 +71,36 @@ onMounted(() => {
       const animatePlanet = () => {
         const time = Date.now() * 0.0001;
         const angle = time * 2 * Math.PI / orbitDuration;
+        planetGroup.position.set(
+          distance * Math.cos(angle),
+          0,
+          distance * Math.sin(angle)
+        );
+      };
+
+      animateFunctions.push(animatePlanet);
+    });
+
+    return planetGroup;
+  };
+
+  const earthGroup = createPlanet('images/earth.png', 80, 300, 1, 0, 'Terre');
+
+  const createMoon = (imagePath: string, size: number, distance: number, orbitDuration: number, orbitTilt = 0, name: string, parent: THREE.Group) => {
+    const textureLoader = new THREE.TextureLoader();
+
+    textureLoader.load(imagePath, (texture) => {
+      const material = new THREE.SpriteMaterial({ map: texture });
+      const sprite = new THREE.Sprite(material);
+      sprite.scale.set(size, size, 1);
+      sprite.userData.name = name;
+      planets.push(sprite);
+
+      parent.add(sprite);
+
+      const animateMoon = () => {
+        const time = Date.now() * 0.0001;
+        const angle = time * 2 * Math.PI / orbitDuration;
         sprite.position.set(
           distance * Math.cos(angle),
           0,
@@ -72,16 +108,15 @@ onMounted(() => {
         );
       };
 
-      scene.add(sprite);
-      animateFunctions.push(animatePlanet);
+      animateFunctions.push(animateMoon);
     });
   };
 
+  createMoon('images/moon.png', 20, 40, 0.0748, 0, 'Lune', earthGroup);
+
   createPlanet('images/sun.png', 400, 0, 0.1, 0, 'Soleil');
   createPlanet('images/mercury.png', 40, 150, 0.24, 0, 'Mercure');
-  createPlanet('images/venus.png', 60, 220, 0.62, 0, 'Vénus');
-  createPlanet('images/earth.png', 80, 300, 1, 0, 'Terre');
-  createPlanet('images/moon.png', 20, 340, 0.0748, 0, 'Lune');
+  createPlanet('images/venus.png', 60, 220, 0.62, 0, 'VÃ©nus');
   createPlanet('images/mars.png', 50, 450, 1.88, 0, 'Mars');
   createPlanet('images/jupiter.png', 160, 600, 11.86, 0, 'Jupiter');
   createPlanet('images/saturn.png', 140, 750, 29.46, 0, 'Saturne');
