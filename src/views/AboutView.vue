@@ -8,6 +8,7 @@
 import { ref, onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import StarryBackground from "../components/StarryBackground.vue";
 
 const solarSystem = ref<HTMLDivElement | null>(null);
 
