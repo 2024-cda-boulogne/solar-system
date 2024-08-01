@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import StarryEcosystem from '@/views/StarryEcosystem.vue';
+import PlanetsView from '@/views/PlanetsView.vue'; // Importer le nouveau composant PlanetsView
 
 const routes = [
   {
@@ -16,7 +17,7 @@ const routes = [
   {
     path: '/planets',
     name: 'planets',
-    component: () => import('../components/Planets.vue'),
+    component: PlanetsView, // Utiliser PlanetsView ici
   },
   {
     path: '/starrybackground',
