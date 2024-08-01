@@ -116,6 +116,12 @@ onMounted(() => {
   
   const saturnGroup = createPlanet('images/neptune.png', 100, 1050, 164.8, 0, 'Neptune');
   createMoon('images/eric.png', 60, 100, 0.004, 0, 'El Rico', saturnGroup);
+  createMoon('images/eric.png', 60, 100, 0.008, 0, 'El Rico', saturnGroup);
+  createMoon('images/eric.png', 60, 100, 0.012, 0, 'El Rico', saturnGroup);
+  createMoon('images/eric.png', 60, 100, 0.016, 0, 'El Rico', saturnGroup);
+
+
+
 
   createPlanet('images/sun.png', 400, 0, 0.1, 0, 'Soleil');
   createPlanet('images/mercury.png', 40, 150, 0.24, 0, 'Mercure');
