@@ -1,129 +1,121 @@
 <template>
   <div id="app">
+    <StarryBackground />
     <div ref="solarSystem" class="solar-system"></div>
+    <h1 class="title">Ça c'est mon système solaire</h1>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import StarryBackground from "../components/StarryBackground.vue";
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-export default {
-  name: 'App',
-  mounted() {
-    this.initSolarSystem();
-  },
-  methods: {
-    initSolarSystem() {
-      // Création de la scène
-      const scene = new THREE.Scene();
+const solarSystem = ref(null);
 
-      // Ajout du fond étoilé
-      const loader = new THREE.TextureLoader();
-      loader.load('images/stars.jpg', function (texture) {
-        scene.background = texture;
-      });
+onMounted(() => {
+  const scene = new THREE.Scene();
 
-      // Création de la caméra
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
-      camera.position.set(0, 500, 1500);  // Ajuster la position de la caméra
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
+  camera.position.set(0, 500, 1500);
 
-      // Création du renderer
-      const renderer = new THREE.WebGLRenderer();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      this.$refs.solarSystem.appendChild(renderer.domElement);
+  const renderer = new THREE.WebGLRenderer({ alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  solarSystem.value.appendChild(renderer.domElement);
 
-      // Ajout des contrôles d'orbite
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true; // Activer le lissage
-      controls.dampingFactor = 0.25;
-      controls.enableZoom = true;
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.25;
+  controls.enableZoom = true;
 
-      // Fonction pour créer une planète avec une texture PNG
-      const createPlanet = (imagePath, size, distance, orbitDuration, orbitTilt = 0) => {
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.load(imagePath, (texture) => {
-          const material = new THREE.SpriteMaterial({ map: texture });
-          const sprite = new THREE.Sprite(material);
-          sprite.scale.set(size, size, 1); // Ajuster l'échelle des sprites
+  const createPlanet = (imagePath, size, distance, orbitDuration, orbitTilt = 0) => {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(imagePath, (texture) => {
+      const material = new THREE.SpriteMaterial({ map: texture });
+      const sprite = new THREE.Sprite(material);
+      sprite.scale.set(size, size, 1);
 
-          // Ajout de l'orbite
-          const orbit = new THREE.EllipseCurve(
-            0, 0, // centre X, Y
-            distance, distance, // rayon X, Y
-            0, 2 * Math.PI, // angle de départ et de fin
-            false, // sens horaire
-            orbitTilt // rotation
-          );
+      const orbit = new THREE.EllipseCurve(
+        0, 0,
+        distance, distance,
+        0, 2 * Math.PI,
+        false,
+        orbitTilt
+      );
 
-          const points = orbit.getPoints(50);
-          const geometry = new THREE.BufferGeometry().setFromPoints(points);
-          const materialOrbit = new THREE.LineBasicMaterial({ color: 0xffffff });
-          const ellipse = new THREE.Line(geometry, materialOrbit);
-          ellipse.rotation.x = Math.PI / 2; // Mettre l'orbite en plan horizontal
-          scene.add(ellipse);
+      const points = orbit.getPoints(50);
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const materialOrbit = new THREE.LineBasicMaterial({ color: 0xffffff });
+      const ellipse = new THREE.Line(geometry, materialOrbit);
+      ellipse.rotation.x = Math.PI / 2;
+      scene.add(ellipse);
 
-          // Animation de la planète le long de son orbite
-          const animatePlanet = () => {
-            const time = Date.now() * 0.0001;
-            const angle = time * 2 * Math.PI / orbitDuration;
-            sprite.position.set(
-              distance * Math.cos(angle),
-              0,
-              distance * Math.sin(angle)
-            );
-          };
-
-          scene.add(sprite);
-          animateFunctions.push(animatePlanet);
-        });
+      const animatePlanet = () => {
+        const time = Date.now() * 0.0001;
+        const angle = time * 2 * Math.PI / orbitDuration;
+        sprite.position.set(
+          distance * Math.cos(angle),
+          0,
+          distance * Math.sin(angle)
+        );
       };
 
-      const animateFunctions = [];
+      scene.add(sprite);
+      animateFunctions.push(animatePlanet);
+    });
+  };
 
-      // Ajout des planètes avec des fichiers PNG et tailles ajustées
-      createPlanet('images/sun.png', 400, 0, 0.1);         // Soleil
-      createPlanet('images/mercury.png', 40, 150, 0.24);  // Mercure
-      createPlanet('images/venus.png', 60, 220, 0.62);   // Vénus
-      createPlanet('images/earth.png', 80, 300, 1);      // Terre
-      createPlanet('images/moon.png', 20, 340, 0.0748);  // Lune (orbite autour de la Terre)
-      createPlanet('images/mars.png', 50, 450, 1.88);    // Mars
-      createPlanet('images/jupiter.png', 160, 600, 11.86); // Jupiter
-      createPlanet('images/saturn.png', 140, 750, 29.46); // Saturne
-      createPlanet('images/uranus.png', 100, 900, 84);    // Uranus
-      createPlanet('images/neptune.png', 100, 1050, 164.8); // Neptune
+  const animateFunctions = [];
 
-      // Animation
-      const animate = function () {
-        requestAnimationFrame(animate);
+  createPlanet('images/sun.png', 400, 0, 0.1);
+  createPlanet('images/mercury.png', 40, 150, 0.24);
+  createPlanet('images/venus.png', 60, 220, 0.62);
+  createPlanet('images/earth.png', 80, 300, 1);
+  createPlanet('images/moon.png', 20, 340, 0.0748);
+  createPlanet('images/mars.png', 50, 450, 1.88);
+  createPlanet('images/jupiter.png', 160, 600, 11.86);
+  createPlanet('images/saturn.png', 140, 750, 29.46);
+  createPlanet('images/uranus.png', 100, 900, 84);
+  createPlanet('images/neptune.png', 100, 1050, 164.8);
 
-        // Mise à jour des contrôles d'orbite
-        controls.update();
+  const animate = () => {
+    requestAnimationFrame(animate);
+    controls.update();
+    animateFunctions.forEach(fn => fn());
+    renderer.render(scene, camera);
+  };
 
-        animateFunctions.forEach(fn => fn());
-
-        renderer.render(scene, camera);
-      };
-
-      animate();
-    },
-  },
-};
+  animate();
+});
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-.solar-system {
+  position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  color: #fff;
+}
+
+.solar-system {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: #fff;
+  font-size: 2rem;
+  text-align: center;
 }
 </style>
