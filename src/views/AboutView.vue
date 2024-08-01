@@ -113,15 +113,17 @@ onMounted(() => {
   };
 
   createMoon('images/moon.png', 20, 40, 0.0748, 0, 'Lune', earthGroup);
+  
+  const saturnGroup = createPlanet('images/neptune.png', 100, 1050, 164.8, 0, 'Neptune');
+  createMoon('images/eric.png', 60, 100, 0.005, 0, 'El Rico', saturnGroup);
 
   createPlanet('images/sun.png', 400, 0, 0.1, 0, 'Soleil');
   createPlanet('images/mercury.png', 40, 150, 0.24, 0, 'Mercure');
-  createPlanet('images/venus.png', 60, 220, 0.62, 0, 'VÃ©nus');
+  createPlanet('images/venus.png', 60, 220, 0.62, 0, 'Vénus');
   createPlanet('images/mars.png', 50, 450, 1.88, 0, 'Mars');
   createPlanet('images/jupiter.png', 160, 600, 11.86, 0, 'Jupiter');
-  createPlanet('images/saturn.png', 140, 750, 29.46, 0, 'Saturne');
   createPlanet('images/uranus.png', 100, 900, 84, 0, 'Uranus');
-  createPlanet('images/neptune.png', 100, 1050, 164.8, 0, 'Neptune');
+  createPlanet('images/saturn.png', 140, 750, 29.46, 0, 'Saturne');
 
   const onMouseClick = (event: MouseEvent) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
