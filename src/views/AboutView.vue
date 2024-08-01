@@ -6,6 +6,7 @@
 
 <script>
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export default {
   name: 'App',
@@ -26,12 +27,17 @@ export default {
       // Création de la caméra
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
       camera.position.set(0, 500, 1500);  // Ajuster la position de la caméra
-      camera.lookAt(0, 0, 0);             // Faire regarder la caméra vers le centre
 
       // Création du renderer
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
       this.$refs.solarSystem.appendChild(renderer.domElement);
+
+      // Ajout des contrôles d'orbite
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true; // Activer le lissage
+      controls.dampingFactor = 0.25;
+      controls.enableZoom = true;
 
       // Fonction pour créer une planète avec une texture PNG
       const createPlanet = (imagePath, size, distance, orbitDuration, orbitTilt = 0) => {
@@ -90,6 +96,9 @@ export default {
       // Animation
       const animate = function () {
         requestAnimationFrame(animate);
+
+        // Mise à jour des contrôles d'orbite
+        controls.update();
 
         animateFunctions.forEach(fn => fn());
 
