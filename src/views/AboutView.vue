@@ -1,9 +1,14 @@
 <template>
   <div id="app">
-    <StarryBackground />  <!-- Ajout du composant ici -->
+    <StarryBackground />
     <div ref="solarSystem" class="solar-system"></div>
+    <div class="slider-container">
+      <label for="speedSlider">Vitesse de rotation:</label>
+      <input type="range" id="speedSlider" v-model="rotationSpeed" min="0.1" max="5" step="0.1" />
+    </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
@@ -12,6 +17,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import StarryBackground from "../components/StarryBackground.vue";
 
 const solarSystem = ref<HTMLDivElement | null>(null);
+const rotationSpeed = ref(1); // Variable réactive pour stocker la vitesse de rotation
 
 onMounted(() => {
   if (!solarSystem.value) return;
@@ -69,7 +75,7 @@ onMounted(() => {
       scene.add(ellipse);
 
       const animatePlanet = () => {
-        const time = Date.now() * 0.0001;
+        const time = Date.now() * 0.0001 * rotationSpeed.value; // Utilisation de la vitesse de rotation
         const angle = time * 2 * Math.PI / orbitDuration;
         planetGroup.position.set(
           distance * Math.cos(angle),
@@ -99,7 +105,7 @@ onMounted(() => {
       parent.add(sprite);
 
       const animateMoon = () => {
-        const time = Date.now() * 0.0001;
+        const time = Date.now() * 0.0001 * rotationSpeed.value; // Utilisation de la vitesse de rotation
         const angle = time * 2 * Math.PI / orbitDuration;
         sprite.position.set(
           distance * Math.cos(angle),
@@ -114,14 +120,19 @@ onMounted(() => {
 
   createMoon('images/moon.png', 20, 40, 0.0748, 0, 'Lune', earthGroup);
 
+  const saturnGroup = createPlanet('images/neptune.png', 100, 1050, 164.8, 0, 'Neptune');
+  createMoon('images/eric.png', 60, 100, 0.004, 0, 'El Rico', saturnGroup);
+  createMoon('images/eric.png', 60, 100, 0.008, 0, 'El Rico', saturnGroup);
+  createMoon('images/eric.png', 60, 100, 0.012, 0, 'El Rico', saturnGroup);
+  createMoon('images/eric.png', 60, 100, 0.016, 0, 'El Rico', saturnGroup);
+
   createPlanet('images/sun.png', 400, 0, 0.1, 0, 'Soleil');
   createPlanet('images/mercury.png', 40, 150, 0.24, 0, 'Mercure');
-  createPlanet('images/venus.png', 60, 220, 0.62, 0, 'VÃ©nus');
+  createPlanet('images/venus.png', 60, 220, 0.62, 0, 'Vénus');
   createPlanet('images/mars.png', 50, 450, 1.88, 0, 'Mars');
   createPlanet('images/jupiter.png', 160, 600, 11.86, 0, 'Jupiter');
-  createPlanet('images/saturn.png', 140, 750, 29.46, 0, 'Saturne');
   createPlanet('images/uranus.png', 100, 900, 84, 0, 'Uranus');
-  createPlanet('images/neptune.png', 100, 1050, 164.8, 0, 'Neptune');
+  createPlanet('images/saturn.png', 140, 750, 29.46, 0, 'Saturne');
 
   const onMouseClick = (event: MouseEvent) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -132,7 +143,7 @@ onMounted(() => {
 
     if (intersects.length > 0) {
       const planetName = intersects[0].object.userData.name;
-      console.log(`Clicked planet: ${planetName}`); // Ajout du log
+      console.log(`Clicked planet: ${planetName}`);
       const customEvent = new CustomEvent('planet-clicked', { detail: planetName });
       window.dispatchEvent(customEvent);
     }
@@ -167,5 +178,18 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   z-index: 1;
+}
+
+.slider-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  color: #fff;
+}
+
+#speedSlider {
+  width: 200px;
 }
 </style>
