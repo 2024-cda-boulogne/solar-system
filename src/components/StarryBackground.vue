@@ -3,7 +3,6 @@
 </template>
 
 <script>
-// @ts-ignore
 import * as THREE from 'three';
 
 export default {

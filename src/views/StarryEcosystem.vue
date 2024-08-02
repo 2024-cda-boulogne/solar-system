@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// @ts-ignore
 import StarryBackground from "../components/StarryBackground.vue";
 </script>
 
